@@ -1,0 +1,68 @@
+version: '3'
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    networks:
+      - mongo-net
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    networks:
+      - mongo-net
+    depends_on:
+      - zookeeper
+    ports:
+      - 9092:9092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  kafdrop:
+    image: obsidiandynamics/kafdrop:latest
+    networks:
+      - mongo-net
+    depends_on:
+      - kafka
+    ports:
+      - 19000:9000
+    environment:
+      KAFKA_BROKERCONNECT: kafka:29092
+
+  mongo-express:
+    image: mongo-express
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_AUTH_DATABASE: test
+      ME_CONFIG_MONGODB_AUTH_USERNAME: test
+      ME_CONFIG_MONGODB_AUTH_PASSWORD: test
+      ME_CONFIG_BASICAUTH_USERNAME: test
+      ME_CONFIG_BASICAUTH_PASSWORD: test
+      ME_CONFIG_MONGODB_PORT: 27017
+    links:
+      - mongo
+    networks:
+      - mongo-net
+
+  mongo:
+    image: mongo:3.6.21-xenial
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    ports:
+      - "27017:27017"
+    #volumes:
+    #  - /home/renatogroffe/Desenvolvimento/Docker/Volumes/MongoDB:/data/db
+    networks:
+      - mongo-net
+
+networks:
+  mongo-net:
+    driver: bridge

@@ -1,0 +1,46 @@
+---
+spring:
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+  main:
+    allow-bean-definition-overriding: true
+  profiles:
+    active: ${SPRING_PROFILE}
+
+db:
+  host: ${DB_HOST}
+  port: ${DB_PORT}
+  database: ${DB_NAME}
+---
+spring:
+  profiles: kubedev
+db:
+  host: ${DB_HOST}
+  port: ${DB_PORT}
+  database: ${DB_NAME}
+  username: ${DB_USERNAME}
+  password: ${DB_PASSWORD}
+---
+spring:
+  profiles: local
+db:
+  host: ${DB_HOST}
+  port: ${DB_PORT}
+  database: ${DB_NAME}
+  username: ${DB_USERNAME}
+  password: ${DB_PASSWORD}
+---
+spring:
+  profiles: testing
+
+db:
+  host: 127.0.0.1
+  port: 27017
+  database: local
+  username: root
+  password: example
+---
+spring:
+  profiles:
+    active: ${SPRING_PROFILE}

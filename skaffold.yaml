@@ -1,0 +1,9 @@
+apiVersion: skaffold/v1beta7
+kind: Config
+build:
+  artifacts:
+    - image: transacoes
+deploy:
+  kubectl:
+    manifests:
+      - minikube-dev/k8s-*
