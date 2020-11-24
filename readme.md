@@ -47,15 +47,15 @@ Escolhi mongodb para eu ter **flexibilidade** em relação ao modelo de dados e 
 Para executar a aplicação em modo local, apenas com as dependências(mongodb) em docker:
 ```bash
 ./startMongo.sh # espere o mongo subir...
-gradle clean bootRun -x test
+SPRING_PROFILE=local-predefined ./gradlew clean bootRun -x test
 ```
 #
 Para executar a aplicação 100% em docker:
 ```bash
 ./startMongo.sh # espere o mongo subir...
 docker build -t marcos/transacoes:latest .
-docker run -d --name transacoes --network mongo-net -p 8080:8080 marcos/transacoes:latest
-docker network connect bridge transacoes
+docker run -d --name transacoes --network transacoes_mongo-net marcos/transacoes:latest
+docker network connect bridge transacoes_mongo-net # este só é necessário se houver dificuldade em conectar no mongo
 ```
 #
 Obs.: _Eu **sei** que eu poderia colocar tudo no docker-compose. Mas algumas vezes, gosto de rodar os comandos baixo-nível exatamente para ter certeza do que está sendo executado. A "automação" possui uma parcela de abstração, o que deixa as execuções sem os detalhes necessários e importantes e é outra maneira de eu demonstrar meu conhecimento profundo no Docker._

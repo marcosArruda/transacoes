@@ -8,9 +8,5 @@ public class AppProfiles {
 
     public static final String TESTING = "testing";
 
-    public static final String KUBEDEV = "kubedev";
-    public static final String KUBEHML = "kubehml";
-    public static final String KUBEPRD = "kubeprd";
-
     private AppProfiles() {}
 }

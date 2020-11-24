@@ -14,15 +14,6 @@ db:
   database: ${DB_NAME}
 ---
 spring:
-  profiles: kubedev
-db:
-  host: ${DB_HOST}
-  port: ${DB_PORT}
-  database: ${DB_NAME}
-  username: ${DB_USERNAME}
-  password: ${DB_PASSWORD}
----
-spring:
   profiles: local
 db:
   host: ${DB_HOST}
@@ -33,6 +24,16 @@ db:
 ---
 spring:
   profiles: testing
+
+db:
+  host: 127.0.0.1
+  port: 27017
+  database: local
+  username: root
+  password: example
+---
+spring:
+  profiles: local-predefined
 
 db:
   host: 127.0.0.1
