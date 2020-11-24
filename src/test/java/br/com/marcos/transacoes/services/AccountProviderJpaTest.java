@@ -19,7 +19,7 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class AccountProviderJpaTest {
 
-    private static final Account firstAccount = new Account(1, "Marcos Faria Arruda", "123456789");
+    private static final Account firstAccount = new Account(1, "Marcos Faria Arruda", "123456789", 0);
     private static final AccountCriteria accountCriteria =
             new AccountCriteria(1L, "Marcos Faria Arruda", "123456789");
 

@@ -15,18 +15,22 @@ import static org.springframework.data.mongodb.core.query.Query.query;
 
 @Service
 public class SeqGeneratorService {
-    private final MongoOperations mongoOperations;
     private final ReactiveMongoTemplate reactiveMongoTemplate;
 
     @Autowired
-    public SeqGeneratorService(final MongoOperations mongoOperations, final ReactiveMongoTemplate reactiveMongoTemplate){
-        this.mongoOperations = mongoOperations;
+    public SeqGeneratorService(final ReactiveMongoTemplate reactiveMongoTemplate){
         this.reactiveMongoTemplate = reactiveMongoTemplate;
     }
 
     public long generateSequence(final String seqName) {
         DatabaseSequence counter = getSeq(seqName);
         return !Objects.isNull(counter) ? counter.getSeq() : 1;
+    }
+
+    public long resetAllSequences(){
+        return reactiveMongoTemplate.findAllAndRemove(
+                query(where("_id").exists(true)), DatabaseSequence.class
+        ).toStream().count();
     }
 
     /**
@@ -38,6 +42,6 @@ public class SeqGeneratorService {
         return reactiveMongoTemplate.findAndModify(
                 query(where("_id").is(seqName)), new Update().inc("seq",1),
                 options().returnNew(true).upsert(true), DatabaseSequence.class
-        ).block();
+        ).toProcessor().block();
     }
 }

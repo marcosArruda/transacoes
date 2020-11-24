@@ -9,6 +9,7 @@ A stack escolhida é 100% reativa e non-blocking de maneira a prover a melhor pe
 ## Componentes
 
 - Java 11
+- gradle 5.2+
 - Spring WebFlux
 - Spring Data
 - Docker
@@ -16,6 +17,8 @@ A stack escolhida é 100% reativa e non-blocking de maneira a prover a melhor pe
 
 ## Dependências
 
+- JDK 11
+- gradle 5.2+
 - MongoDB 3.6+ para persistência
 
 ## Variáveis de Ambiente
@@ -35,17 +38,19 @@ Obs.: Adicionei uma série de estruturas bonus para a facilitar a integração c
 - docker-compose.yml com a dependência do mongodb para subir a aplicação local(e rodar o teste de integração também).
 - docker-compose.yml com stack completa do kafka, porém não tive tempo de terminar o meu grande plano de fazer TODA a persistência no kafka :).
 
+## Sobre a persistência
+
+Escolhi mongodb para eu ter **flexibilidade** em relação ao modelo de dados e acelerar o meu desenvolvimento, que fiz basicamente em 2 dias. Em outras palavras, o mongodb não é o unico tipo de banco de dados que poderia ser usado nesse projeto, exatamente porque estou utilizando JPA, de maneira que a camada de acesso a persistência permanece abstrata o suficiente para que vários tipos de persistência possam ser usadas, sem muitas mudanças na base de código, incluindo até mesmo persistência **_100% kafka_** para uma arquitetura orientada a eventos.
+
 ## Como rodar?
 
 Para executar a aplicação em modo local, apenas com as dependências(mongodb) em docker:
-#
 ```bash
 ./startMongo.sh # espere o mongo subir...
 gradle clean bootRun -x test
 ```
 #
 Para executar a aplicação 100% em docker:
-#
 ```bash
 ./startMongo.sh # espere o mongo subir...
 docker build -t marcos/transacoes:latest .
@@ -53,6 +58,6 @@ docker run -d --name transacoes --network mongo-net -p 8080:8080 marcos/transaco
 docker network connect bridge transacoes
 ```
 #
-Obs.: Eu **sei** que eu poderia colocar tudo no docker-compose. Mas algumas vezes, gosto de rodar os comandos baixo-nível exatamente para ter certeza do que está sendo executado. A "automação" possui uma parcela de abstração, o que deixa as execuções sem os detalhes necessários e importantes no momento em que estamos realizando um **"troubleshooting"**.
+Obs.: _Eu **sei** que eu poderia colocar tudo no docker-compose. Mas algumas vezes, gosto de rodar os comandos baixo-nível exatamente para ter certeza do que está sendo executado. A "automação" possui uma parcela de abstração, o que deixa as execuções sem os detalhes necessários e importantes e é outra maneira de eu demonstrar meu conhecimento profundo no Docker._
  
 Qualquer dúvida, é só entrar em contato.

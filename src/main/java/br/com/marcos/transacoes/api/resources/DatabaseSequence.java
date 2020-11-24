@@ -3,8 +3,9 @@ package br.com.marcos.transacoes.api.resources;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "database_sequences")
+@Document(collection = DatabaseSequence.COLLECTION)
 public class DatabaseSequence {
+    public static final String COLLECTION = "database_sequences";
     @Id
     private String id;
     private long seq;

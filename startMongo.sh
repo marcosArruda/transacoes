@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
 docker-compose down
-dspf
-dvpf
+docker system prune -f
+docker volume prune -f
 docker-compose up -d mongo

@@ -5,6 +5,7 @@ import br.com.marcos.transacoes.infra.persistence.TransactionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 
 import static java.lang.String.format;
 
+@Service
 public class TransactionCreatorJpa implements TransactionCreator{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TransactionCreatorJpa.class);

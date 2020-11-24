@@ -4,6 +4,7 @@ import br.com.marcos.transacoes.api.resources.Transaction;
 import br.com.marcos.transacoes.api.resources.TransactionCriteria;
 import br.com.marcos.transacoes.services.TransactionCreator;
 import br.com.marcos.transacoes.services.TransactionProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,7 @@ public class TransactionsController {
     private final TransactionCreator transactionCreator;
     private final TransactionProvider transactionProvider;
 
+    @Autowired
     public TransactionsController(final TransactionCreator transactionCreator, final TransactionProvider transactionProvider){
         this.transactionCreator = transactionCreator;
         this.transactionProvider = transactionProvider;

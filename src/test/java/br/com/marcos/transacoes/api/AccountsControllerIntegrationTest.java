@@ -2,22 +2,20 @@ package br.com.marcos.transacoes.api;
 
 import br.com.marcos.transacoes.api.resources.Account;
 import br.com.marcos.transacoes.config.profiles.AppProfiles;
-import com.mongodb.MongoClient;
+import br.com.marcos.transacoes.infra.persistence.AccountRepository;
+import br.com.marcos.transacoes.services.SeqGeneratorService;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
-import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
-
-import java.util.List;
 
 import static br.com.marcos.transacoes.api.AccountsController.ACCOUNTS_URI;
 
@@ -31,16 +29,16 @@ import static br.com.marcos.transacoes.api.AccountsController.ACCOUNTS_URI;
 @ActiveProfiles(AppProfiles.TESTING)
 public class AccountsControllerIntegrationTest {
     private static final Account newAccount = new Account("Marcos", "123456789");
-    private static final Account persistedAccount = new Account(1, "Marcos", "123456789");
+    private static final Account persistedAccount = new Account(1, "Marcos", "123456789", 0);
 
     @Autowired
     private ApplicationContext context;
 
     @Autowired
-    private MongoTemplate mongoTemplate;
+    private AccountRepository accountRepository;
 
     @Autowired
-    private MongoClient mongoClient;
+    private SeqGeneratorService seqGenerator;
 
     private WebTestClient testClient;
 
@@ -75,17 +73,20 @@ public class AccountsControllerIntegrationTest {
 
         testClient = WebTestClient.bindToApplicationContext(context).build();
         System.out.println("THESE TESTS NEED A MONGODB INSTANCE ONLINE TO RUN. THEY ARE INTEGRATION TESTS!!");
-        //mongoClient.getDatabase("test").drop();
+        accountRepository.deleteAll().toProcessor().block();
+        seqGenerator.resetAllSequences();
     }
 
 
     @Test
     public void postAccount() {
+        accountRepository.deleteAll().toProcessor().block();
+        seqGenerator.resetAllSequences();
         final Account response =
                 this.testClient.post()
                         .uri(ACCOUNTS_URI)
                         .accept(MediaType.APPLICATION_JSON)
-                        .syncBody(newAccount)
+                        .bodyValue(newAccount)
                         .exchange()
                         .expectStatus().isOk()
                         .expectBody(Account.class)
@@ -93,10 +94,14 @@ public class AccountsControllerIntegrationTest {
                         .getResponseBody();
 
         Assertions.assertThat(response).isEqualToIgnoringGivenFields(newAccount, Account.ACCOUNT_ID_JAVA_FIELD);
+        seqGenerator.resetAllSequences();
+        accountRepository.deleteAll().toProcessor().block();
     }
 
     @Test
     public void getAccount() {
+        accountRepository.deleteAll().toProcessor().block();
+        seqGenerator.resetAllSequences();
 
         this.testClient.post()
                 .uri(ACCOUNTS_URI)
@@ -105,7 +110,8 @@ public class AccountsControllerIntegrationTest {
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(Account.class)
-                .returnResult();
+                .returnResult()
+                .getResponseBody();
 
         final Account response = this.testClient.get()
                 .uri(ACCOUNTS_URI + "/1")
@@ -117,5 +123,7 @@ public class AccountsControllerIntegrationTest {
                 .getResponseBody();
 
         Assertions.assertThat(response).isEqualTo(persistedAccount);
+        accountRepository.deleteAll().toProcessor().block();
+        seqGenerator.resetAllSequences();
     }
 }
