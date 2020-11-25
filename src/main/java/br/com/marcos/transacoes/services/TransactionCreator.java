@@ -6,5 +6,5 @@ import reactor.core.publisher.Mono;
 import javax.validation.Valid;
 
 public interface TransactionCreator {
-    Mono<Transaction> createTransaction(@Valid final Transaction transaction);
+    Mono<Transaction> maybeCreateTransaction(@Valid final Transaction transaction);
 }

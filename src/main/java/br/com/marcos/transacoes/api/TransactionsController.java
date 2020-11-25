@@ -31,7 +31,7 @@ public class TransactionsController {
 
     @PostMapping
     private Mono<ResponseEntity<Transaction>> postTransaction(@NotNull @RequestBody final Transaction transaction){
-        return transactionCreator.createTransaction(transaction)
+        return transactionCreator.maybeCreateTransaction(transaction)
                 .map(trz -> new ResponseEntity<>(trz, HttpStatus.OK));
     }
 

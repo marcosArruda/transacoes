@@ -92,6 +92,16 @@ public class Account {
         return documentNumber;
     }
 
+    @JsonProperty(BALANCE_JSON_FIELD)
+    public long getBalance() {
+        return balance;
+    }
+
+    @JsonProperty(BALANCE_JSON_FIELD)
+    public void sensibiliza(long value) {
+        balance += value;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -1,5 +1,6 @@
 package br.com.marcos.transacoes.api.resources;
 
+import java.util.Arrays;
 import java.util.StringJoiner;
 
 public enum OperationType {
@@ -30,6 +31,16 @@ public enum OperationType {
     public boolean isNegative() {
         return negative;
     }
+
+    public static OperationType fromId(int id){
+        for (OperationType o : OperationType.values()){
+            if(o.getId() == id){
+                return o;
+            }
+        }
+        return null;
+    }
+
 
     @Override
     public String toString() {
